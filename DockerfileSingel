@@ -1,0 +1,20 @@
+# Copies in our code and runs NPM Install
+# Phase I
+FROM python:3.8 as builder
+WORKDIR /usr/src/app
+COPY flask-api/ ./
+RUN pip install -r requirements.txt
+# Running Unit TESTS
+RUN ["make", "test"] 
+
+# Running pylint 
+# pylint instal local
+WORKDIR /code
+COPY pylint.cfg /etc/pylint.cfg
+COPY *.py ./
+COPY api ./api
+COPY docker-entrypoint.sh /
+RUN ["/docker-entrypoint.sh", "pylint"];
+
+#RUN the app
+CMD ["python", "run_app.py"]
